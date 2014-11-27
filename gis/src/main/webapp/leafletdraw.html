@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Leaflet Draw</title>
+<title>under construction</title>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -37,7 +37,6 @@ html,body,#map {
 }
 </style>
 <script src="connection.js" type="text/javascript"></script>
-<script src="kioske-nrw.js" type="text/javascript"></script>
 <script src="jquery/jquery-2.1.1.min.js"></script>
 <script src="bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
 <script src="leaflet-0.7.3/leaflet.js" type="text/javascript"></script>
@@ -59,9 +58,7 @@ html,body,#map {
 	<div id="divNavbarArea" class="navbar navbar-inverse navbar-fixed-top"
 		role="navigation"></div>
 	<script type="text/javascript">
-		$(function() {
-			$("#divNavbarArea").load("navbar.html");
-		});
+		$("#divNavbarArea").load("/gis/dataservice/html/navbar");
 	</script>
 	<div id="map"></div>
 	<script>
@@ -81,13 +78,43 @@ html,body,#map {
 			separate : true
 		});
 		map.addControl(loadingControl);
+	</script>
 
-		// Initialise the FeatureGroup to store editable layers
+	<script>
 		var drawnItems = new L.FeatureGroup();
-		map.addLayer(drawnItems);
+		
+		//Add previous data
+		var kioskForDrawUrl = "/leaflet/dataservice/draw/getdraw";
+		$.getJSON(kioskForDrawUrl, function(data){
+	        geojsonLayer = L.geoJson(data,{
+	        	onEachFeature: function (feature, layer) {
+	        		layer.cartodb_id=feature.properties.cartodb_id;
+			        drawnItems.addLayer(layer);
+			    }
+	        });
+    	});
+        map.addLayer(drawnItems);
 
-		// Initialise the draw control and pass it the FeatureGroup of editable layers
 		var drawControl = new L.Control.Draw({
+			draw : {
+				position : 'topleft',
+				polygon : {
+					title : 'Draw a polygon!',
+					allowIntersection : false,
+					drawError : {
+						color : '#b00b00',
+						timeout : 1000
+					},
+					shapeOptions : {
+						color : '#bada55'
+					},
+					showArea : true
+				},
+				polyline : {
+					metric : true
+				},
+				circle : false
+			},
 			edit : {
 				featureGroup : drawnItems
 			}
@@ -98,26 +125,111 @@ html,body,#map {
 			var type = e.layerType, layer = e.layer;
 
 			if (type === 'marker') {
-				// Do marker specific actions
+				layer.bindPopup("1" + layer.getLatLng());
+			} else if (type === 'rectangle') {
+				var geoJson = layer.toGeoJSON();
+				geoJson.properties.type = type;
+				
+				var msg = JSON.stringify(geoJson);
+				msg = msg + '<br/>type: ' + geoJson.type;
+				msg = msg + '<br/>radius: ' + e._shape;
+				layer.bindPopup(msg);
+			} else {
+				layer.bindPopup(JSON.stringify(layer.toGeoJSON()));
+			}
+			persistShopService("INSERT",e.layer);
+			drawnItems.addLayer(layer);
+		});
+		
+		map.on('draw:edited', function (e) {
+			persistOnCartoDB("UPDATE",e.layers);
+		});
+
+		map.on('draw:deleted', function (e) {
+			persistOnCartoDB("DELETE",e.layers);
+		});
+
+		function persistShopService(action,layers) {
+			var cartodb_ids=[];
+			var geojsons=[];
+
+			switch(action) {
+				case "UPDATE":
+					if(layers.getLayers().length<1)
+						return;
+					layers.eachLayer(function(layer) {
+						cartodb_ids.push(layer.cartodb_id);
+						geojsons.push(JSON.stringify(layer.toGeoJSON()));
+					});
+					break;
+
+				case "INSERT":
+					cartodb_ids.push(-1);
+					geojsons.push(JSON.stringify(layers.toGeoJSON()));
+					break;
+
+				case "DELETE":
+					layers.eachLayer(function(layer) {
+						cartodb_ids.push(layer.cartodb_id);
+						geojsons.push("''");
+					});
+					break;
 			}
 
-			// Do whatever else you need to. (save to db, add to map etc)
-			map.addLayer(layer);
-		});
+			var sldkfj = geojsons.join(",");
 
-		map.on('draw:edited', function(e) {
-			var layers = e.layers;
-			layers.eachLayer(function(layer) {
-				//do whatever you want, most likely save back to db
-			});
-		});
+			switch(action) {
+			case "UPDATE":
+				if(layers.getLayers().length<1)
+					return;
+				layers.eachLayer(function(layer) {
+					cartodb_ids.push(layer.cartodb_id);
+					geojsons.push(JSON.stringify(layer.toGeoJSON()));
+				});
+				break;
 
-		map.on('draw:edited', function(e) {
-			var layers = e.layers;
-			layers.eachLayer(function(layer) {
-				//do whatever you want, most likely save back to db
-			});
-		});
+			case "INSERT":
+				console.log("persisting... " + sldkfj	);
+				$.ajax({
+				    type: 'POST',
+				    url: '/leaflet/dataservice/draw/postdraw',
+				    data: {q : sldkfj},
+				    dataType: 'json',
+				    success : function(json) {
+						console.log("Data saved");
+					},
+				    error: function (responseData, textStatus, errorThrown) {
+				        console.log("Problem saving the data");
+				    }
+				});
+				break;
+
+			case "DELETE":
+				console.log("deleting... " + sldkfj	);
+				$.ajax({
+				    type: 'DELETE',
+				    url: '/leaflet/dataservice/draw/deletedraw',
+				    data: {q : sldkfj},
+				    dataType: 'json',
+				    success : function(json) {
+						console.log("Data saved");
+					},
+				    error: function (responseData, textStatus, errorThrown) {
+				        console.log("Problem saving the data");
+				    }
+				});
+				break;
+		}
+
+
+
+		}
+		
+		
+	</script>
+
+
+	<script>
 
 		// infobox rechts oben	
 		var info = L.control();
@@ -130,57 +242,16 @@ html,body,#map {
 
 		// method that we will use to update the control based on feature properties passed
 		info.update = function(properties) {
-			this._div.innerHTML = "<b>" + infoboxContent + "</b>" + "<p><ul>"
-					+ "<li>L&auml;dt Kioske nach Bedarf</li>"
-					+ "<li>Erlaubt es Punkte, Linien<br/>und Polygone zu defineren</li>"
-					+ "<li>ermöglicht die Suche nach Kiosk-Namen</li></ul></p>";
+			this._div.innerHTML = "<b>" + infoboxContent + "</b>";
 		};
 		info.addTo(map);
-		
+
 		// einbinden des OMS-Layers
 		var osm = L.tileLayer(tilesUrl, {
 			maxZoom : maxZoom,
 			attribution : attribution
 		});
 		map.addLayer(osm);
-
-		// define kioskUrl
-		function getKioskUrl() {
-			return "/osm/dataservice/shop/kioskxyz?centerx="
-					+ map.getCenter().lat + "&centery=" + map.getCenter().lng
-					+ "&upperleftx=" + map.getBounds().getNorth().toString()
-					+ "&upperlefty=" + map.getBounds().getEast().toString();
-		}
-		// define Layer
-		var kioskLayer = new L.GeoJSON.AJAX(getKioskUrl(), {
-			onEachFeature : popUp
-		});
-		map.addLayer(kioskLayer);
-		// wenn zoomed: reload
-		map.on('zoomend', function() {
-			kioskLayer.refresh(getKioskUrl());
-		});
-		map.on('dragend', function() {
-			kioskLayer.refresh(getKioskUrl());
-		});
-		map.on('moveend', function() {
-			kioskLayer.refresh(getKioskUrl());
-		});
-
-		// Array der verwendeten baseLayers (should be read from server by ajax)
-		var baseLayers = {
-			"OpenStreetMap" : osm
-		};
-		// Array der verwendeten overLays (should be read from server by ajax)
-		var overlays = {
-			"Kioske" : kioskLayer
-		};
-		// Layers dem Control-Layer uebergeben.
-		var layers = new L.Control.Layers(baseLayers, overlays, {
-			collapsed : false,
-			position : 'topright'
-		});
-		map.addControl(layers);
 
 		var scale = L.control.scale();
 		map.addControl(scale);

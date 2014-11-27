@@ -5,16 +5,137 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="bootstrap-3.2.0-dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="leaflet-0.7.3/leaflet.css" />
+
+<style type="text/css">
+body {
+	padding-top: 50px;
+	margin: 0;
+}
+
+#map {
+	height: 240px;
+	width: 360px;
+	padding: 10px;
+}
+</style>
+<script src="connection.js" type="text/javascript"></script>
 <script src="jquery/jquery-2.1.1.min.js"></script>
 <script src="bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+<script src="leaflet-0.7.3/leaflet.js" type="text/javascript"></script>
+
 </head>
 <body>
 	<div id="divNavbarArea" class="navbar navbar-inverse navbar-fixed-top"
 		role="navigation"></div>
 	<script type="text/javascript">
-		$(function() {
-			$("#divNavbarArea").load("navbar.html");
-		});
+		$("#divNavbarArea").load("/gis/dataservice/html/navbar");
 	</script>
+	<div class="jumbotron">
+		<div class="container">
+			<h1>OpenGis/ RisGis/ WebGis</h1>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-4">
+				<h2>Architekturüberlegungen</h2>
+				<ul>
+					<li>Service Orientierung</li>
+					<li>Microservices</li>
+					<li>Trennung Darstellung Karten &lt;=&gt; Darstellung Features</li>
+					<li>Javascript-Anwendung in html eingebettet</li>
+					<li>OpenSource Komponenten</li>
+					<li>Eigene Services</li>
+					<li>GeoJSON als zentrales Austauschformat</li>
+					<li>Weg des geringsten Widerstands</li>
+				</ul>
+			</div>
+			<div class="col-md-4">
+				<p id="map">
+					<script type="text/javascript">
+						attribution = "";
+						zoom = 12;
+						var map = L.map('map').setView(center, zoom);
+						// einbinden des OMS-Layers
+						var osm = L.tileLayer(tilesUrl, {
+							maxZoom : maxZoom,
+							attribution : attribution
+						});
+						map.addLayer(osm);
+					</script>
+				</p>
+			</div>
+			<div class="col-md-4">
+				<h2>Verwendete Technologien</h2>
+				<ul>
+					<li><a href="http://leafletjs.com/">Leaflet</a>; <a
+						href="http://leafletjs.com/plugins.html">diverse Plugins</a></li>
+					<li><a href="http://jquery.com/">jQuery</a></li>
+					<li><a href="http://getbootstrap.com/">Bootstrap</a></li>
+					<li><a href="http://geojson.org/">GeoJson</a></li>
+					<li><a href="http://www.postgresql.org/">PostgreSQL</a>/ <a
+						href="http://postgis.net/">Postgis</a></li>
+					<li><a href="http://www.openstreetmap.de">OpenStreetMap</a></li>
+					<li><a href="http://tomcat.apache.org">Tomcat</a></li>
+					<li><a href="http://mapnik.org/">Mapnik</a>/ <a
+						href="http://wiki.openstreetmap.org/wiki/Mod_tile">mod_tiles</a></li>
+					<li>usw.</li>
+				</ul>
+			</div>
+			<div class="col-md-4">
+				<h2>Beispiele</h2>
+				<p>Folgende Beispiele stehen zur Verfügung:</p>
+				<ol>
+					<li><a href="/gis/spielplaetze.html">Statische Daten
+							anhand von Spielplätzen in Köln</a></li>
+					<li><a href="/gis/kioske.html">Statische Daten anhand von
+							Kioske in NRW;<br />Datenextrakt aus Open Streetmap Daten,<br />unterschiedliche
+							Darstellungsmöglichkeiten von Punkten
+					</a></li>
+					<li><a href="/gis/osmshopdataservice.html">Per Ajax/ REST
+							abgerufene Shop-Informationen</a></li>
+					<li><a href="/gis/osmadministrativeAjax.html">Interaktiv
+							administrative Layer aus OSM abfragen und anzeigen</a></li>
+					<li><a href="/gis/osmlinedataservice.html">Per Ajax/ REST
+							abgerufene Autbahn-Informationen</a></li>
+					<li><a href="/gis/leafletsearch.html">Interaktiv Kioske
+							abfragen, anzeigen und suchen</a></li>
+					<li><a href="/gis/leafletdraw.html">Zeichnen von Layern - <i>in der Entwicklung</i></a></li>
+				</ol>
+			</div>
+			<div class="col-md-4">
+				<h2>Browsersupport</h2>
+				<p>
+					Im Rahmen dieses Projektes wird für die grundlegenden Funktionen
+					neben <a href="http://leafletjs.com/">Leaflet</a> <a
+						href="http://jquery.com/">jQuery</a> eingesetzt. Da es in diesem
+					Projekt nicht um die Darstellung der größtmöglichen Kompatibilität
+					geht, wird die aktuellste Version (jQuery 2.1.1) eingesetzt. Das
+					bringt es mit sich, dass der <b>Internet Explorer erst ab
+						Version 9 unterstützt</b> wird. Die generelle Unterstützung der
+					Browser befindet sich auf den <a
+						href="http://jquery.com/browser-support/">jQuery-Seiten im
+						Bereich Browser Support</a>.
+				</p>
+			</div>
+			<div class="col-md-4">
+				<h2>Besonderheiten</h2>
+				<p>Dieser Showcase soll die Möglichkeiten eines WebGis
+					aufzeigen. Es ist aber auch der Ort, um Lernziele darzustellen.</p>
+				<p>
+					Um die Datenbasis überschaubar zu halten, liegen die <a
+						href="http://www.openstreetmap.de">OpenStreetMap</a> <a
+						href="http://download.geofabrik.de/europe/germany/nordrhein-westfalen.html">Daten
+						für das Land Nordrhein-Westfalen</a> zugrunden.
+				</p>
+			</div>
+		</div>
+		<footer>
+			<p>
+				&copy; <a href="http://www.ris.de/">Ris 2014</a>
+			</p>
+		</footer>
+	</div>
 </body>
 </html>

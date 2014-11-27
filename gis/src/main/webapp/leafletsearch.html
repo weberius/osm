@@ -42,7 +42,6 @@ html,body,#map {
 }
 </style>
 <script src="connection.js" type="text/javascript"></script>
-<script src="kioske-nrw.js" type="text/javascript"></script>
 <script src="jquery/jquery-2.1.1.min.js"></script>
 <script src="bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
 <script src="leaflet-0.7.3/leaflet.js" type="text/javascript"></script>
@@ -64,9 +63,7 @@ html,body,#map {
 	<div id="divNavbarArea" class="navbar navbar-inverse navbar-fixed-top"
 		role="navigation"></div>
 	<script type="text/javascript">
-		$(function() {
-			$("#divNavbarArea").load("navbar.html");
-		});
+		$("#divNavbarArea").load("/gis/dataservice/html/navbar");
 	</script>
 	<div id="map"></div>
 	<script>

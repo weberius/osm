@@ -96,15 +96,14 @@ html,body,#map {
 	<div id="divNavbarArea" class="navbar navbar-inverse navbar-fixed-top"
 		role="navigation"></div>
 	<script type="text/javascript">
-		$(function() {
-			$("#divNavbarArea").load("navbar.html");
-		});
+		$("#divNavbarArea").load("/gis/dataservice/html/navbar");
 	</script>
 	<div id="map"></div>
 	<script>
 		// set additional attribution
 		attribution = attribution
 				+ ', <a href="https://github.com/calvinmetcalf/leaflet-ajax">Leaflet Ajax</a>';
+		zoom = 11;
 		// create map
 		var map = L.map('map').setView(center, zoom);
 
@@ -161,7 +160,7 @@ html,body,#map {
 				});
 			}
 		});
-
+		
 		// Regierungsbezirk
 		var administrativLayer5 = new L.geoJson(null);
 		map.on('overlayadd', function(e) {

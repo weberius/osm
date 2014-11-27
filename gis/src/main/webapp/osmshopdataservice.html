@@ -67,13 +67,12 @@ html,body,#map {
 	<div id="divNavbarArea" class="navbar navbar-inverse navbar-fixed-top"
 		role="navigation"></div>
 	<script type="text/javascript">
-		$(function() {
-			$("#divNavbarArea").load("navbar.html");
-		});
+		$("#divNavbarArea").load("/gis/dataservice/html/navbar");
 	</script>
 
 	<div id="map"></div>
 	<script>
+		zoom = 14;
 		// create map
 		var map = L.map('map').setView(center, zoom);
 
