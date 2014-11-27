@@ -1,0 +1,9 @@
+select osm_id, admin_level, bicycle, bridge, boundary, foot, highway, motorcar, name, population, ref, surface, tracktype, waterway, width, ST_AsText(ST_Transform(way,4326)) as way 
+from planet_osm_roads 
+where boundary = 'administrative'
+
+select osm_id, admin_level, bicycle, bridge, boundary, foot, highway, motorcar, name, population, ref, surface, tracktype, waterway, width, 
+ST_ASGEOJSON(ST_Transform(way,4326)) as way 
+from planet_osm_roads 
+where boundary = 'administrative'
+and name = 'Köln'
