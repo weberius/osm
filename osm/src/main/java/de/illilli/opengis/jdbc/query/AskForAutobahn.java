@@ -17,7 +17,7 @@ public class AskForAutobahn {
 
 	public String sql = "select osm_id, admin_level, bicycle, bridge, boundary, foot, highway, motorcar, "
 			+ "name, population, ref, surface, tracktype, waterway, width, " //
-			+ "ST_ASGEOJSON(ST_Transform(way,4326)) as way " //
+			+ "ST_ASGEOJSON(ST_Transform(ST_Simplify(way,100),4326)) as way " //
 			+ "from planet_osm_line where highway = 'motorway' ";
 
 	private DbUtilsBeanListHandler<PlanetOsmLine> handler;
@@ -27,7 +27,8 @@ public class AskForAutobahn {
 
 	public AskForAutobahn() throws SQLException {
 		connection = ConnectionFactory.getConnection();
-		beanListHandler = new BeanListHandler<PlanetOsmLine>(PlanetOsmLine.class);
+		beanListHandler = new BeanListHandler<PlanetOsmLine>(
+				PlanetOsmLine.class);
 	}
 
 	public AskForAutobahn(String id) throws SQLException {
@@ -41,7 +42,8 @@ public class AskForAutobahn {
 	}
 
 	public List<PlanetOsmLine> getPois() throws SQLException {
-		handler = new DbUtilsBeanListHandler<PlanetOsmLine>(connection, beanListHandler, sql);
+		handler = new DbUtilsBeanListHandler<PlanetOsmLine>(connection,
+				beanListHandler, sql);
 		pois = handler.getList();
 		return pois;
 	}
