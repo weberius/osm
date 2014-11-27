@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sich bewegende Punkte</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="leaflet-0.7.3/leaflet.css" />
+<link rel="stylesheet" href="leaflet-0.7.3/Control.Loading.css" />
+<link rel="stylesheet" href="leaflet-0.7.3/leaflet.viewcenter.css" />
+<link rel="stylesheet" href="leaflet-0.7.3/MarkerCluster.css" />
+<link rel="stylesheet" href="leaflet-0.7.3/MarkerCluster.Default.css" />
+<link rel="stylesheet" href="bootstrap-3.2.0-dist/css/bootstrap.min.css">
+<style type="text/css">
+body {
+	padding-top: 50px;
+	margin: 0;
+}
+
+html,body,#map {
+	height: 100%;
+}
+
+.info {
+	padding: 6px 8px;
+	font: 14px/16px Arial, Helvetica, sans-serif;
+	background: white;
+	background: rgba(255, 255, 255, 0.8);
+	box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+	border-radius: 5px;
+}
+
+.info h4 {
+	margin: 0 0 5px;
+	color: #777;
+}
+</style>
+<script src="connection.js" type="text/javascript"></script>
+<script src="jquery/jquery-2.1.1.min.js"></script>
+<script src="bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+<script src="leaflet-0.7.3/leaflet.js" type="text/javascript"></script>
+<script src="leaflet-0.7.3/Control.Loading.js" type="text/javascript"></script>
+<script src="leaflet-0.7.3/leaflet.viewcenter.js" type="text/javascript"></script>
+<script src="leaflet-0.7.3/leaflet.ajax.js" type="text/javascript"></script>
+<script src="leaflet-0.7.3/leaflet.spin.js"></script>
+<script src="leaflet-0.7.3/spin.js"></script>
+</head>
+<body>
+	<div id="divNavbarArea" class="navbar navbar-inverse navbar-fixed-top"
+		role="navigation">
+		<script type="text/javascript">
+			$("#divNavbarArea").load("/gis/dataservice/html/navbar");
+		</script>
+	</div>
+	<div id="map"></div>
+	<script>
+		center = [ 51.50361379162682, 7.6025390625 ]
+		zoom = 8;
+		// create map
+		var map = L.map('map').setView(center, zoom);
+
+		// add view Center
+		var viewCenter = new L.Control.ViewCenter();
+		map.addControl(viewCenter);
+
+		// add loading control
+		var loadingControl = L.Control.loading({
+			separate : true
+		});
+		map.addControl(loadingControl);
+
+		// infobox rechts oben	
+		var info = L.control();
+		info.onAdd = function(map) {
+			// create a div with a class "info"
+			this._div = L.DomUtil.create('div', 'info');
+			this.update();
+			return this._div;
+		};
+
+		// method that we will use to update the control based on feature properties passed
+		info.update = function(properties) {
+			this._div.innerHTML = infoboxContent;
+		};
+		info.addTo(map);
+
+		// einbinden des OMS-Layers
+		var osm = L.tileLayer(tilesUrl, {
+			maxZoom : maxZoom,
+			attribution : attribution
+		});
+		map.addLayer(osm);
+
+		// Autobahn
+		//var autobahnLayer = new L.GeoJSON.AJAX();
+		//autobahnLayer.addUrl("/osm/dataservice/roads/autobahn");
+
+		var autobahnLayer = new L.geoJson(null);
+		map.on('overlayadd', function(e) {
+			if (e.name == 'Autobahnen') {
+				autobahnLayer.fire('data:loading');
+				$.getJSON(getAutbahnUrl(''), function(data) {
+					autobahnLayer.fire('data:loaded');
+					autobahnLayer.addData(data);
+				});
+			}
+		});
+
+		function getAutbahnUrl(highway) {
+			return "/osm/dataservice/roads/autobahn/" + highway;
+		};
+		var autobahnA1Layer = new L.geoJson(null);
+		map.on('overlayadd', function(e) {
+			if (e.name == 'A1') {
+				autobahnA1Layer.fire('data:loading');
+				$.getJSON(getAutbahnUrl(e.name), function(data) {
+					autobahnA1Layer.fire('data:loaded');
+					autobahnA1Layer.addData(data);
+				});
+			}
+		});
+
+		var autobahnA61Layer = new L.geoJson(null);
+		map.on('overlayadd', function(e) {
+			if (e.name == 'A61') {
+				autobahnA61Layer.fire('data:loading');
+				$.getJSON(getAutbahnUrl(e.name), function(data) {
+					autobahnA61Layer.fire('data:loaded');
+					autobahnA61Layer.addData(data);
+				});
+			}
+		});
+
+		var autobahnA2Layer = new L.geoJson(null);
+		map.on('overlayadd', function(e) {
+			if (e.name == 'A2') {
+				autobahnA2Layer.fire('data:loading');
+				$.getJSON(getAutbahnUrl(e.name), function(data) {
+					autobahnA2Layer.fire('data:loaded');
+					autobahnA2Layer.addData(data);
+				});
+			}
+		});
+
+		var autobahnA3Layer = new L.geoJson(null);
+		map.on('overlayadd', function(e) {
+			if (e.name == 'A3') {
+				autobahnA3Layer.fire('data:loading');
+				$.getJSON(getAutbahnUrl(e.name), function(data) {
+					autobahnA3Layer.fire('data:loaded');
+					autobahnA3Layer.addData(data);
+				});
+			}
+		});
+
+		var autobahnA4Layer = new L.geoJson(null);
+		map.on('overlayadd', function(e) {
+			if (e.name == 'A4') {
+				autobahnA4Layer.fire('data:loading');
+				$.getJSON(getAutbahnUrl(e.name), function(data) {
+					autobahnA4Layer.fire('data:loaded');
+					autobahnA4Layer.addData(data);
+				});
+			}
+		});
+
+		var autobahnA44Layer = new L.geoJson(null);
+		map.on('overlayadd', function(e) {
+			if (e.name == 'A44') {
+				autobahnA44Layer.fire('data:loading');
+				$.getJSON(getAutbahnUrl(e.name), function(data) {
+					autobahnA44Layer.fire('data:loaded');
+					autobahnA44Layer.addData(data);
+				});
+			}
+		});
+
+		var autobahnA40Layer = new L.geoJson(null);
+		map.on('overlayadd', function(e) {
+			if (e.name == 'A40') {
+				autobahnA40Layer.fire('data:loading');
+				$.getJSON(getAutbahnUrl(e.name), function(data) {
+					autobahnA40Layer.fire('data:loaded');
+					autobahnA40Layer.addData(data);
+				});
+			}
+		});
+
+		// Array der verwendeten baseLayers (should be read from server by ajax)
+		var baseLayers = {
+			"OpenStreetMap" : osm
+		};
+		// Array der verwendeten overLays (should be read from server by ajax)
+		var overlays = {
+			"Autobahnen" : autobahnLayer,
+			"A1" : autobahnA1Layer,
+			"A2" : autobahnA2Layer,
+			"A3" : autobahnA3Layer,
+			"A4" : autobahnA4Layer,
+			"A40" : autobahnA40Layer,
+			"A44" : autobahnA44Layer,
+			"A61" : autobahnA61Layer
+		};
+		// Layers dem Control-Layer uebergeben.
+		var layers = new L.Control.Layers(baseLayers, overlays, {
+			collapsed : true,
+			position : 'topright'
+		});
+		map.addControl(layers);
+	</script>
+</body>
+</html>
