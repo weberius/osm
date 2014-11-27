@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>OSM Administrativ Areas</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="leaflet-0.7.3/leaflet.css" />
+<link rel="stylesheet" href="leaflet-0.7.3/Control.Loading.css" />
+<link rel="stylesheet" href="leaflet-0.7.3/leaflet.viewcenter.css" />
+<link rel="stylesheet" href="bootstrap-3.2.0-dist/css/bootstrap.min.css">
+
+<style type="text/css">
+body {
+	padding-top: 50px;
+	margin: 0;
+}
+
+html,body,#map {
+	height: 100%;
+}
+
+.info {
+	padding: 6px 8px;
+	font: 14px/16px Arial, Helvetica, sans-serif;
+	background: white;
+	background: rgba(255, 255, 255, 0.8);
+	box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+	border-radius: 5px;
+}
+
+.info h4 {
+	margin: 0 0 5px;
+	color: #777;
+}
+
+#btn-spin {
+	position: absolute;
+	left: 200px;
+	z-index: 10;
+	font-size: 1.5em;
+}
+</style>
+<script src="connection.js" type="text/javascript"></script>
+<script src="jquery/jquery-2.1.1.min.js"></script>
+<script src="bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+<script src="leaflet-0.7.3/leaflet.js" type="text/javascript"></script>
+<script src="leaflet-0.7.3/Control.Loading.js" type="text/javascript"></script>
+<script src="leaflet-0.7.3/leaflet.viewcenter.js" type="text/javascript"></script>
+<script src="leaflet-0.7.3/leaflet.ajax.js" type="text/javascript"></script>
+<script src="leaflet-0.7.3/leaflet.spin.js"></script>
+<script src="leaflet-0.7.3/spin.js"></script>
+<script type="text/javascript">
+	function highlightFeature(feature) {
+		var layer = feature.target;
+
+		layer.setStyle({
+			weight : 5,
+			color : '#666',
+			dashArray : '',
+			fillOpacity : 0.7
+		});
+
+		if (!L.Browser.ie && !L.Browser.opera) {
+			layer.bringToFront();
+		}
+		info.update(feature.properties);
+	}
+
+	function popUp(feature, layer) {
+		var popupContent = feature.properties.name;
+		layer.bindPopup(popupContent);
+	}
+
+	function stylePostalCode(feature) {
+		return {
+			color : "#000",
+			fillColor : "#ff0",
+			weight : 2,
+			opacity : 0.8,
+			fillOpacity : 0.2
+		};
+	}
+	function style(feature) {
+		return {
+			color : "#000",
+			fillColor : "#f0" + feature.properties.admin_level,
+			weight : 2,
+			opacity : 0.8,
+			fillOpacity : 0.1
+		};
+	}
+</script>
+</head>
+<body>
+	<div id="divNavbarArea" class="navbar navbar-inverse navbar-fixed-top"
+		role="navigation"></div>
+	<script type="text/javascript">
+		$(function() {
+			$("#divNavbarArea").load("navbar.html");
+		});
+	</script>
+	<div id="map"></div>
+	<script>
+		// set additional attribution
+		attribution = attribution
+				+ ', <a href="https://github.com/calvinmetcalf/leaflet-ajax">Leaflet Ajax</a>';
+		// create map
+		var map = L.map('map').setView(center, zoom);
+
+		// add view Center
+		var viewCenter = new L.Control.ViewCenter();
+		map.addControl(viewCenter);
+
+		// add loading control
+		var loadingControl = L.Control.loading({
+			separate : true
+		});
+		map.addControl(loadingControl);
+
+		// infobox rechts oben	
+		var info = L.control();
+
+		info.onAdd = function(map) {
+			// create a div with a class "info"
+			this._div = L.DomUtil.create('div', 'info');
+			this.update();
+			return this._div;
+		};
+		// method that we will use to update the control based on feature properties passed
+		info.update = function(properties) {
+			this._div.innerHTML = "<b>" + infoboxContent + "</b>" + "<p><ul>"
+					+ "<li>dynamische Daten (REST)</li>"
+					+ "<li>Daten werden mit Auswahl<br/>des Layer geladen</li>"
+					+ "<li>L&auml;dt Stadtgrenzen etc.</li>"
+					+ "<li>Ggf. lange Ladezeiten</li>"
+					+ "<li>Hat Spinner</li></ul></p>";
+		};
+		info.addTo(map);
+
+		// einbinden des OMS-Layers
+		var osm = L.tileLayer(tilesUrl, {
+			maxZoom : maxZoom,
+			attribution : attribution
+		});
+		map.addLayer(osm);
+
+		// define
+		function getAdministrativLayer(adminLevel) {
+			return "/osm/dataservice/boundary/administrative/" + adminLevel
+		};
+
+		// Bundesland
+		var administrativLayer4 = new L.geoJson(null);
+		map.on('overlayadd', function(e) {
+			if (e.name == 'Bundesland') {
+				administrativLayer4.fire('data:loading');
+				$.getJSON(getAdministrativLayer(4), function(data) {
+					administrativLayer4.fire('data:loaded');
+					administrativLayer4.addData(data);
+				});
+			}
+		});
+
+		// Regierungsbezirk
+		var administrativLayer5 = new L.geoJson(null);
+		map.on('overlayadd', function(e) {
+			if (e.name == 'Regierungsbezirk') {
+				administrativLayer5.fire('data:loading');
+				$.getJSON(getAdministrativLayer(5), function(data) {
+					administrativLayer5.fire('data:loaded');
+					administrativLayer5.addData(data);
+				});
+			}
+		});
+
+		var administrativLayer6 = new L.geoJson(null);
+		map.on('overlayadd', function(e) {
+			if (e.name == 'Kreis') {
+				administrativLayer6.fire('data:loading');
+				$.getJSON(getAdministrativLayer(6), function(data) {
+					administrativLayer6.fire('data:loaded');
+					administrativLayer6.addData(data);
+				});
+			}
+		});
+
+		var administrativLayer8 = new L.geoJson(null);
+		map.on('overlayadd', function(e) {
+			if (e.name == 'Stadt, Gemeinde') {
+				administrativLayer8.fire('data:loading');
+				$.getJSON(getAdministrativLayer(8), function(data) {
+					administrativLayer8.fire('data:loaded');
+					administrativLayer8.addData(data);
+				});
+			}
+		});
+
+		var administrativLayer9 = new L.geoJson(null);
+		map.on('overlayadd', function(e) {
+			if (e.name == 'Stadtbezirk') {
+				administrativLayer9.fire('data:loading');
+				$.getJSON(getAdministrativLayer(9), function(data) {
+					administrativLayer9.fire('data:loaded');
+					administrativLayer9.addData(data);
+				});
+			}
+		});
+
+		var administrativLayer10 = new L.geoJson(null);
+		map.on('overlayadd', function(e) {
+			if (e.name == 'Stadtteil') {
+				administrativLayer10.fire('data:loading');
+				$.getJSON(getAdministrativLayer(10), function(data) {
+					administrativLayer10.fire('data:loaded');
+					administrativLayer10.addData(data);
+				});
+			}
+		});
+
+		function getPostalCodeLayer() {
+			return "/osm/dataservice/boundary/postalcode"
+		};
+		var postalCodeLayer = new L.geoJson(null);
+		map.on('overlayadd', function(e) {
+			if (e.name == 'PLZ') {
+				postalCodeLayer.fire('data:loading');
+				$.getJSON(getPostalCodeLayer(), function(data) {
+					postalCodeLayer.fire('data:loaded');
+					postalCodeLayer.addData(data);
+				});
+			}
+		});
+
+		// Array der verwendeten baseLayers (should be read from server by ajax)
+		var baseLayers = {
+			"OpenStreetMap" : osm
+		};
+		// Array der verwendeten overLays (should be read from server by ajax)
+		var overlays = {
+			"Bundesland" : administrativLayer4,
+			"Regierungsbezirk" : administrativLayer5,
+			"Kreis" : administrativLayer6,
+			"Stadt, Gemeinde" : administrativLayer8,
+			"Stadtbezirk" : administrativLayer9,
+			"Stadtteil" : administrativLayer10,
+			"PLZ" : postalCodeLayer
+		};
+		// Layers dem Control-Layer uebergeben.
+		var layers = new L.Control.Layers(baseLayers, overlays, {
+			collapsed : true,
+			position : 'topright'
+		});
+		map.addControl(layers);
+
+		var scale = L.control.scale();
+		map.addControl(scale);
+	</script>
+</body>
+</html>
