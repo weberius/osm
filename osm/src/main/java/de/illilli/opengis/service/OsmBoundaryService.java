@@ -24,9 +24,8 @@ import de.illilli.opengis.jdbc.query.AskForAdministrativeBoundaries;
 import de.illilli.opengis.jdbc.query.AskForPostalCodeBoundaries;
 
 /**
- * <a href=
- * "http://jce.iaik.tugraz.at/sic/Products/Communication-Messaging-Security/iSaSiLk/documentation/Secure-Renegotiation"
- * >Probleme mit "Connection reset by peer"</a>
+ * <a href="http://jce.iaik.tugraz.at/sic/Products/Communication-Messaging-Security/iSaSiLk/documentation/Secure-Renegotiation">Probleme mit
+ * "Connection reset by peer"</a>
  * 
  * @author ow#1115
  * 
@@ -34,13 +33,10 @@ import de.illilli.opengis.jdbc.query.AskForPostalCodeBoundaries;
 @Path("/boundary")
 public class OsmBoundaryService {
 
-	private static final Logger logger = Logger
-			.getLogger(OsmBoundaryService.class);
+	private static final Logger logger = Logger.getLogger(OsmBoundaryService.class);
 
 	/**
-	 * <a
-	 * href="http://localhost:8090/osm/dataservice/boundary/administrative/6">
-	 * http://localhost:8090/dataservice/osm/boundary/administrative</a>
+	 * <a href="http://localhost:8090/osm/dataservice/boundary/administrative/6"> http://localhost:8090/dataservice/osm/boundary/administrative</a>
 	 * 
 	 * @return
 	 * @throws SQLException
@@ -48,54 +44,15 @@ public class OsmBoundaryService {
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
 	@Path("administrative/{adminLevel}")
-	public String getAdministrative(@PathParam("adminLevel") String adminLevel)
-			throws SQLException, JsonProcessingException {
+	public String getAdministrative(@PathParam("adminLevel") String adminLevel) throws SQLException, JsonProcessingException {
 		logger.debug("requesting adminLevel " + adminLevel);
 
 		// 1. get Data from DB
-		List<PlanetOsmPolygon> pois = new AskForAdministrativeBoundaries(
-				adminLevel).getPois();
-		// 2. User Dao for converting to Bo
-		PlanetOsmPolygonDao planetOsmPolygonDao = new PlanetOsmPolygonDao(pois);
-		// 3. change to feature List
-		PlanetOsmFeature geojsonJacksonOsmFeature = new GeojsonJacksonOsmFeature(
-				planetOsmPolygonDao.getPlanetOsmBoList());
-		List<Feature> featureList = geojsonJacksonOsmFeature.getFeatureList();
-		// 4. Prepare FeatureCollection; other features can be added.
-		FeatureCollection featureCollection = new FeatureCollection();
-		for (Feature feature : featureList) {
-			featureCollection.add(feature);
-		}
-		// 5. get GeoJson - String
-		logger.debug("return adminLevel " + adminLevel + ": " + pois.size()
-				+ " of pois");
-		return new ObjectMapper().writeValueAsString(featureCollection);
-	}
-
-	/**
-	 * <a
-	 * href="http://localhost:8090/osm/dataservice/boundary/administrative/6">
-	 * http://localhost:8090/dataservice/osm/boundary/administrative</a>
-	 * 
-	 * @return
-	 * @throws SQLException
-	 */
-	@GET
-	@Produces({ MediaType.APPLICATION_JSON })
-	@Path("administrative/koeln/{adminLevel}")
-	public String getAdministrativeKoeln(
-			@PathParam("adminLevel") String adminLevel) throws SQLException,
-			JsonProcessingException {
-		logger.debug("requesting adminLevel " + adminLevel);
-
-		// 1. get Data from DB
-		List<PlanetOsmPolygon> pois = new AskForAdministrativeBoundaries(
-				adminLevel).getPois();
+		List<PlanetOsmPolygon> pois = new AskForAdministrativeBoundaries(adminLevel).getPois();
 		// 2. User Dao for converting to Bo
 		PlanetOsmPolygonDao planetOsmLineDao = new PlanetOsmPolygonDao(pois);
 		// 3. change to feature List
-		PlanetOsmFeature geojsonJacksonOsmFeature = new GeojsonJacksonOsmFeature(
-				planetOsmLineDao.getPlanetOsmBoList());
+		PlanetOsmFeature geojsonJacksonOsmFeature = new GeojsonJacksonOsmFeature(planetOsmLineDao.getPlanetOsmBoList());
 		List<Feature> featureList = geojsonJacksonOsmFeature.getFeatureList();
 		// 4. Prepare FeatureCollection; other features can be added.
 		FeatureCollection featureCollection = new FeatureCollection();
@@ -103,14 +60,12 @@ public class OsmBoundaryService {
 			featureCollection.add(feature);
 		}
 		// 5. get GeoJson - String
-		logger.debug("return adminLevel " + adminLevel + ": " + pois.size()
-				+ " of pois");
+		logger.debug("return adminLevel " + adminLevel + ": " + pois.size() + " of pois");
 		return new ObjectMapper().writeValueAsString(featureCollection);
 	}
 
 	/**
-	 * <a href="http://localhost:8090/osm/dataservice/boundary/postalcode">
-	 * http://localhost:8090/dataservice/osm/boundary/administrative</a>
+	 * <a href="http://localhost:8090/osm/dataservice/boundary/postalcode"> http://localhost:8090/dataservice/osm/boundary/administrative</a>
 	 * 
 	 * @return
 	 * @throws SQLException
@@ -121,13 +76,11 @@ public class OsmBoundaryService {
 	public String getPostalCode() throws SQLException, JsonProcessingException {
 		logger.debug("requesting postalcode");
 		// 1. get Data from DB
-		List<PlanetOsmPolygon> pois = new AskForPostalCodeBoundaries()
-				.getPois();
+		List<PlanetOsmPolygon> pois = new AskForPostalCodeBoundaries().getPois();
 		// 2. User Dao for converting to Bo
 		PlanetOsmPolygonDao planetOsmPolygonDao = new PlanetOsmPolygonDao(pois);
 		// 3. change to feature List
-		PlanetOsmFeature geojsonJacksonOsmFeature = new GeojsonJacksonOsmFeature(
-				planetOsmPolygonDao.getPlanetOsmBoList());
+		PlanetOsmFeature geojsonJacksonOsmFeature = new GeojsonJacksonOsmFeature(planetOsmPolygonDao.getPlanetOsmBoList());
 		List<Feature> featureList = geojsonJacksonOsmFeature.getFeatureList();
 		// 4. Prepare FeatureCollection; other features can be added.
 		FeatureCollection featureCollection = new FeatureCollection();

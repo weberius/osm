@@ -9,6 +9,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.log4j.Logger;
 import org.geojson.Feature;
 import org.geojson.FeatureCollection;
 
@@ -25,6 +26,8 @@ import de.illilli.opengis.jdbc.query.AskForFahrradwege;
 
 @Path("/line")
 public class OsmLineService {
+
+	private static final Logger logger = Logger.getLogger(OsmLineService.class);
 
 	/**
 	 * <a href="http://localhost:8090/osm/dataservice/line/administrative">http:/ /localhost:8090/dataservice/osm/boundary/administrative</a>

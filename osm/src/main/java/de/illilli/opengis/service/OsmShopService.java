@@ -124,7 +124,6 @@ public class OsmShopService {
 	 * @throws SQLException
 	 * @throws JsonProcessingException
 	 */
-
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
 	@Path("kioskbyname")
