@@ -12,7 +12,9 @@ import de.illilli.opengis.jdbc.DbUtilsBeanListHandler;
 
 public class AskForPostalCodeBoundaries {
 
-	private String sql = "select osm_id, admin_level, name, ref, ST_ASGEOJSON(ST_Transform(way,4326)) as way "
+	private final int tolerance = 10;
+
+	private String sql = "select osm_id, admin_level, name, ref, ST_ASGEOJSON(ST_Transform(ST_Simplify(way, " + tolerance + "),4326)) as way "
 			+ "from planet_osm_polygon where boundary = 'postal_code' ";
 
 	private DbUtilsBeanListHandler<PlanetOsmPolygon> handler;
