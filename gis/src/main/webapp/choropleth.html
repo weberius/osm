@@ -16,7 +16,7 @@ body {
 	margin: 0;
 }
 
-html,body,#map {
+html, body, #map {
 	height: 100%;
 }
 
@@ -51,16 +51,14 @@ html,body,#map {
 <script src="leaflet-0.7.3/leaflet.spin.js"></script>
 <script src="leaflet-0.7.3/spin.js"></script>
 <script type="text/javascript">
-
+	
 </script>
 </head>
 <body>
 	<div id="divNavbarArea" class="navbar navbar-inverse navbar-fixed-top"
 		role="navigation"></div>
 	<script type="text/javascript">
-		$(function() {
-			$("#divNavbarArea").load("navbar.html");
-		});
+		$("#divNavbarArea").load("navbar.html");
 	</script>
 	<div id="map"></div>
 	<script>
@@ -97,33 +95,31 @@ html,body,#map {
 			maxZoom : maxZoom,
 			attribution : attribution
 		});
-		map.addLayer(osm);
+		var mapBox = L.tileLayer(
+				'http://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
+					maxZoom : maxZoom,
+					attribution : attribution,
+					id : 'examples.map-20v6611k'
+				});
+		map.addLayer(mapBox);
 
 		// define
 		function getAdministrativLayer() {
 			return "/osm/dataservice/stadtteile/koeln"
 		};
 
-		// Stadtteile Koeln
-		var stadtteileKoelnLayer = new L.geoJson(null);
-		map.on('overlayadd', function(e) {
-			if (e.name == 'Stadtteile') {
-				stadtteileKoelnLayer.fire('data:loading');
-				$.getJSON(getAdministrativLayer(), function(data) {
-					stadtteileKoelnLayer.fire('data:loaded');
-					stadtteileKoelnLayer.addData(data);
-				});
-			}
-		});
+		// define Layer; use circleMarker; use popup
+		var stadtteileKoelnLayer = new L.GeoJSON.AJAX("/osm/dataservice/stadtteile/koeln", {});
+		
+		map.addLayer(stadtteileKoelnLayer);
 
 		// Array der verwendeten baseLayers (should be read from server by ajax)
 		var baseLayers = {
-			"OpenStreetMap" : osm
+			"OpenStreetMap" : osm,
+			"MapBox" : mapBox
 		};
-		// Array der verwendeten overLays (should be read from server by ajax)
-		var overlays = {
-			"Stadtteile" : stadtteileKoelnLayer
-		};
+		var overlays = {};
+
 		// Layers dem Control-Layer uebergeben.
 		var layers = new L.Control.Layers(baseLayers, overlays, {
 			collapsed : true,
