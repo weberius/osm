@@ -16,7 +16,7 @@ body {
 	margin: 0;
 }
 
-html,body,#map {
+html, body, #map {
 	height: 100%;
 }
 
@@ -86,9 +86,7 @@ html,body,#map {
 <body>
 	<div id="divNavbarArea" class="navbar navbar-inverse navbar-fixed-top">
 		<script type="text/javascript">
-			$(function() {
-				$("#divNavbarArea").load("navbar.html");
-			});
+			$("#divNavbarArea").load("navbar.html");
 		</script>
 	</div>
 	<div id="map"></div>
@@ -151,7 +149,7 @@ html,body,#map {
 					attribution : attribution,
 					id : 'examples.map-20v6611k'
 				});
-		
+
 		// define Spielplatzlayer
 		var spielplatzLayer = L.geoJson(spielplaetze, {
 			style : style,
@@ -202,7 +200,7 @@ html,body,#map {
 			popup.setLatLng(e.latlng).setContent(content).openOn(map);
 		}
 		map.on('click', onMapClick);
-		
+
 		var scale = L.control.scale();
 		map.addControl(scale);
 	</script>
