@@ -145,10 +145,13 @@ html,body,#map {
 		info.addTo(map);
 
 		// einbinden des OMS-Layers
-		var osm = L.tileLayer(tilesUrl, {
-			maxZoom : maxZoom,
-			attribution : attribution
-		});
+		var osm = L.tileLayer(
+				'http://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
+					maxZoom : maxZoom,
+					attribution : attribution,
+					id : 'examples.map-20v6611k'
+				});
+			
 		map.addLayer(osm);
 
 		// define
