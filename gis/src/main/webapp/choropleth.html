@@ -103,7 +103,7 @@ html, body, #map {
 		// method that we will use to update the control based on feature properties passed
 		info.update = function(properties) {
 			this._div.innerHTML = '<h1>' + infoboxContent + '</h1>' +  (properties ?
-					'<b>' + properties.name + '</b><br />' + properties.ref + ' Sch&uuml;ler'
+					'<b>' + properties.name + '</b><br />' + properties.allgemeinbildende_schulen + ' Sch&uuml;ler'
 					: 'Fahre mit der Maus &uuml;ber einen Stadtteil');
 		};
 		info.addTo(map);
@@ -121,17 +121,12 @@ html, body, #map {
 				});
 		map.addLayer(mapBox);
 
-		// define
-		function getAdministrativLayer() {
-			return "/osm/dataservice/stadtteile/koeln"
-		};
-
 		// get color depending on population density value
 		function getColor(d) {
-			return d > 800 ? '#800026' : d > 600 ? '#BD0026'
-					: d > 600 ? '#E31A1C' : d > 500 ? '#FC4E2A'
-							: d > 400 ? '#FD8D3C' : d > 300 ? '#FEB24C'
-									: d > 200 ? '#FED976' : '#FFEDA0';
+			return d > 6000 ? '#800026' : d > 5000 ? '#BD0026'
+					: d > 4000 ? '#E31A1C' : d > 3000 ? '#FC4E2A'
+							: d > 2000 ? '#FD8D3C' : d > 1000 ? '#FEB24C'
+									: d > 0 ? '#FED976' : '#FFFFFF';
 		}
 
 		function style(feature) {
@@ -141,7 +136,7 @@ html, body, #map {
 				color : 'white',
 				dashArray : '3',
 				fillOpacity : 0.7,
-				fillColor : getColor(feature.properties.ref)
+				fillColor : getColor(feature.properties.allgemeinbildende_schulen)
 			};
 		}
 
@@ -180,9 +175,13 @@ html, body, #map {
 				click : zoomToFeature
 			});
 		}
+		// define
+		function getAdministrativLayer() {
+			return "/odk/dataservice/district/pupils/koeln"
+		};
 		// load Layer
 		stadtteileKoelnLayer = new L.GeoJSON.AJAX(
-				"/osm/dataservice/stadtteile/koeln", {
+				getAdministrativLayer(), {
 					style : style,
 					onEachFeature : onEachFeature
 				});
@@ -195,15 +194,19 @@ html, body, #map {
 
 		legend.onAdd = function(map) {
 
-			var div = L.DomUtil.create('div', 'info legend'), grades = [ 0, 200,
-					300, 400, 500, 600, 700, 800 ], labels = [], from, to;
+			var div = L.DomUtil.create('div', 'info legend'), grades = [ 0, 0,
+					1000, 2000, 3000, 4000, 5000, 6000 ], labels = [], from, to;
 
 			for (var i = 0; i < grades.length; i++) {
 				from = grades[i];
 				to = grades[i + 1];
-
-				labels.push('<i style="background:' + getColor(from + 1)
-						+ '"></i> ' + from + (to ? '&ndash;' + to : '+'));
+				if (i == 0) {
+					labels.push('<i style="background:' + getColor(from)
+							+ '"></i> ' + from + (to ? '&ndash;' + to : ''));
+				} else {
+					labels.push('<i style="background:' + getColor(from + 1)
+							+ '"></i> ' + from + (to ? '&ndash;' + to : '+'));
+				}
 			}
 			div.innerHTML = labels.join('<br>');
 			return div;
