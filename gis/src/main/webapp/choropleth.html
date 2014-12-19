@@ -108,11 +108,6 @@ html, body, #map {
 		};
 		info.addTo(map);
 
-		// einbinden des OMS-Layers
-		var osm = L.tileLayer(tilesUrl, {
-			maxZoom : maxZoom,
-			attribution : attribution
-		});
 		var mapBox = L.tileLayer(
 				'http://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
 					maxZoom : maxZoom,
@@ -213,20 +208,6 @@ html, body, #map {
 		};
 
 		legend.addTo(map);
-
-		// Array baselayers
-		var baseLayers = {
-			"OpenStreetMap" : osm,
-			"MapBox" : mapBox
-		};
-		var overlays = {};
-
-		// Layers dem Control-Layer uebergeben.
-		var layers = new L.Control.Layers(baseLayers, overlays, {
-			collapsed : true,
-			position : 'topright'
-		});
-		map.addControl(layers);
 
 		var scale = L.control.scale();
 		map.addControl(scale);
