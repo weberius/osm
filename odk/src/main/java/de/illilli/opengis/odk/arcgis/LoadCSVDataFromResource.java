@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -16,7 +17,7 @@ import de.illilli.opengis.odk.parser.CsvParser;
 public class LoadCSVDataFromResource<T> {
 
 	private boolean fileFound = false;
-	private List<T> objectList;
+	private List<T> objectList = new ArrayList<T>();
 	private File file;
 	private BufferedReader br;
 

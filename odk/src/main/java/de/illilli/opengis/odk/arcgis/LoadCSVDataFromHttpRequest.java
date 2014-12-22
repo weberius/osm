@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -21,7 +22,7 @@ public class LoadCSVDataFromHttpRequest<T> {
 			.getLogger(LoadCSVDataFromHttpRequest.class);
 
 	private StringBuilder lineBuilder = new StringBuilder();
-	private List<T> objectList;
+	private List<T> objectList = new ArrayList<T>();
 
 	public LoadCSVDataFromHttpRequest(String urlString, CsvParser<T> csvParser) {
 		HttpClient httpClient = HttpClientBuilder.create().build();
