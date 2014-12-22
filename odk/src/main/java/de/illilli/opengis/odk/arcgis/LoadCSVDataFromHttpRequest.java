@@ -24,6 +24,7 @@ public class LoadCSVDataFromHttpRequest<T> {
 	private StringBuilder lineBuilder = new StringBuilder();
 	private List<T> objectList = new ArrayList<T>();
 	private boolean fileFound = false;
+	private BufferedReader br;
 
 	public LoadCSVDataFromHttpRequest(String urlString, CsvParser<T> csvParser) {
 		HttpClient httpClient = HttpClientBuilder.create().build();
@@ -38,8 +39,13 @@ public class LoadCSVDataFromHttpRequest<T> {
 			}
 
 			InputStream src = response.getEntity().getContent();
-			BufferedReader br = new BufferedReader(new InputStreamReader(src,
-					"UTF-8"));
+			fileFound = (src != null);
+
+			if (!fileFound) {
+				return;
+			}
+
+			br = new BufferedReader(new InputStreamReader(src, "UTF-8"));
 			String line;
 			boolean firstLine = true;
 			while ((line = br.readLine()) != null) {
