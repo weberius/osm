@@ -23,6 +23,7 @@ public class LoadCSVDataFromHttpRequest<T> {
 
 	private StringBuilder lineBuilder = new StringBuilder();
 	private List<T> objectList = new ArrayList<T>();
+	private boolean fileFound = false;
 
 	public LoadCSVDataFromHttpRequest(String urlString, CsvParser<T> csvParser) {
 		HttpClient httpClient = HttpClientBuilder.create().build();
@@ -62,6 +63,14 @@ public class LoadCSVDataFromHttpRequest<T> {
 		} finally {
 			httpClient.getConnectionManager().shutdown();
 		}
+	}
+
+	public boolean isFileFound() {
+		return fileFound;
+	}
+
+	public List<T> getObjectList() {
+		return objectList;
 	}
 
 }

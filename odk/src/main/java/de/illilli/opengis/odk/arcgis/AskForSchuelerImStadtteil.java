@@ -16,8 +16,8 @@ public class AskForSchuelerImStadtteil {
 	private static final Logger logger = Logger
 			.getLogger(AskForSchuelerImStadtteil.class);
 
-	String SCHUELER_STADTTEIL_URL = "http://www.offenedaten-koeln.de/sites/default/files/2012_Schueler_Stadtteil.csv";
-	String SCHUELER_STADTTEIL_FILE = "2012_Schueler_Stadtteil.csv";
+	public static final String SCHUELER_STADTTEIL_URL = "http://www.offenedaten-koeln.de/sites/default/files/2012_Schueler_Stadtteil.csv";
+	public static final String SCHUELER_STADTTEIL_FILE = "2012_Schueler_Stadtteil.csv";
 
 	private List<SchuelerImStadtteil> schuelerImStadtteilList = new ArrayList<SchuelerImStadtteil>();
 
