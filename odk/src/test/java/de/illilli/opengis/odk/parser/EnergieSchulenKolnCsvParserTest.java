@@ -18,9 +18,8 @@ public class EnergieSchulenKolnCsvParserTest {
 
 	@Test
 	public void testMapping() throws JsonProcessingException, IOException {
-		EnergieSchulenKoelnCsvParser parser = new EnergieSchulenKoelnCsvParser(
-				line);
-		EnergieSchuleKoeln energie = parser.getEnergieSchulenKoeln();
+		CsvParser<EnergieSchuleKoeln> parser = new EnergieSchulenKoelnCsvParser();
+		EnergieSchuleKoeln energie = parser.getObject(line);
 		logger.debug(energie.toString());
 	}
 

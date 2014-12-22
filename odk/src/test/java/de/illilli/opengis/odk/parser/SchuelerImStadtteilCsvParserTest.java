@@ -19,9 +19,8 @@ public class SchuelerImStadtteilCsvParserTest {
 	public void testGetSchuelerImStadtteil() throws JsonProcessingException,
 			UnsupportedEncodingException, IOException {
 		String line = "101,Altstadt-Süd,5078,282,412,719,3293,0,372";
-		SchuelerImStadtteilCsvParser parser = new SchuelerImStadtteilCsvParser(
-				line);
-		SchuelerImStadtteil schueler = parser.getSchuelerImStadtteil();
+		CsvParser<SchuelerImStadtteil> parser = new SchuelerImStadtteilCsvParser();
+		SchuelerImStadtteil schueler = parser.getObject(line);
 		logger.debug(schueler.toString());
 	}
 

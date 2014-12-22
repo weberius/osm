@@ -1,9 +1,11 @@
 package de.illilli.opengis.odk.parser;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 import org.apache.log4j.Logger;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
@@ -18,13 +20,14 @@ import de.illilli.opengis.odk.bo.csv.EnergieSchuleKoeln;
  * @author wolfram
  *
  */
-public class EnergieSchulenKoelnCsvParser {
+public class EnergieSchulenKoelnCsvParser implements
+		CsvParser<EnergieSchuleKoeln> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger
 			.getLogger(EnergieSchulenKoelnCsvParser.class);
 
-	private EnergieSchuleKoeln energieSchulenKoeln;
+	private ObjectReader objectReader;
 
 	public final static CsvSchema SIMPLE_SCHEMA = CsvSchema.builder()
 			.addColumn("we") //
@@ -44,15 +47,17 @@ public class EnergieSchulenKoelnCsvParser {
 			.addColumn("bemerkung") //
 			.build();
 
-	public EnergieSchulenKoelnCsvParser(final String line) throws IOException {
+	public EnergieSchulenKoelnCsvParser() throws IOException {
 		ObjectMapper mapper = new CsvMapper();
-		ObjectReader objectReader = mapper.reader(SIMPLE_SCHEMA);
+		objectReader = mapper.reader(SIMPLE_SCHEMA);
 		objectReader = objectReader.withType(EnergieSchuleKoeln.class);
-		energieSchulenKoeln = objectReader.readValue(line.getBytes("UTF-8"));
 	}
 
-	public EnergieSchuleKoeln getEnergieSchulenKoeln() {
-		return energieSchulenKoeln;
+	@Override
+	public EnergieSchuleKoeln getObject(final String line)
+			throws JsonProcessingException, UnsupportedEncodingException,
+			IOException {
+		return objectReader.readValue(line.getBytes("UTF-8"));
 	}
 
 }
