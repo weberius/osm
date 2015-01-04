@@ -1,14 +1,13 @@
 package de.illilli.opengis.odk.arcgis;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.log4j.Logger;
+
+import de.illilli.opengis.odk.bo.csv.EinwohnerNachAltersgruppen;
+import de.illilli.opengis.odk.parser.CsvParser;
+import de.illilli.opengis.odk.parser.EinwohnerNachAltersgruppenCsvParser;
 
 /**
  * <a href=
@@ -21,27 +20,42 @@ public class AskForEinwohnerAltersgruppenStadtteile {
 	private static final Logger logger = Logger
 			.getLogger(AskForEinwohnerAltersgruppenStadtteile.class);
 
-	String ALTERSGRUPPEN_STADTTEIL_URL = "http://www.offenedaten-koeln.de/sites/default/files/2012_Altersgruppen_Stadtteil.csv";
+	public static final String ALTERSGRUPPEN_STADTTEIL_URL = "http://www.offenedaten-koeln.de/sites/default/files/2012_Altersgruppen_Stadtteil.csv";
+
+	/**
+	 * Die Einwohner Liste soll nur einmal gelesen werden. Wenn sie bereits
+	 * gelesen wurde, kann sie aus dem Speicher wieder hergestellt werden.
+	 */
+	private static List<EinwohnerNachAltersgruppen> einwohnerList;
 
 	public AskForEinwohnerAltersgruppenStadtteile() {
-		HttpClient httpClient = HttpClientBuilder.create().build();
-		HttpGet getRequest = new HttpGet(ALTERSGRUPPEN_STADTTEIL_URL);
-		getRequest.addHeader("accept", "application/json");
-		HttpResponse response;
-		try {
-			response = httpClient.execute(getRequest);
-			if (response.getStatusLine().getStatusCode() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : "
-						+ response.getStatusLine().getStatusCode());
-			}
 
-			InputStream src = response.getEntity().getContent();
-		} catch (ClientProtocolException e) {
-			logger.error(e);
-		} catch (IOException e) {
-			logger.error(e);
-		} finally {
-			httpClient.getConnectionManager().shutdown();
+		if (einwohnerList == null) {
+			einwohnerList = new ArrayList<EinwohnerNachAltersgruppen>();
+			CsvParser<EinwohnerNachAltersgruppen> csvParser = new EinwohnerNachAltersgruppenCsvParser();
+			LoadCSVDataFromHttpRequest<EinwohnerNachAltersgruppen> loadCSVDataFromResource = new LoadCSVDataFromHttpRequest<EinwohnerNachAltersgruppen>(
+					ALTERSGRUPPEN_STADTTEIL_URL, csvParser);
+			einwohnerList = loadCSVDataFromResource.getObjectList();
+			logger.debug("Data read from '" + ALTERSGRUPPEN_STADTTEIL_URL + "'");
+		} else {
+			logger.debug("Data already read.");
 		}
+
 	}
+
+	public List<EinwohnerNachAltersgruppen> getList() {
+		return einwohnerList;
+	}
+
+	public EinwohnerNachAltersgruppen getEinwohnerInStadtteil(int nr) {
+		EinwohnerNachAltersgruppen einwohnerNachAltersgruppen = null;
+		for (EinwohnerNachAltersgruppen einwohner : einwohnerList) {
+			if (einwohner.getNr() == nr) {
+				einwohnerNachAltersgruppen = einwohner;
+			}
+		}
+
+		return einwohnerNachAltersgruppen;
+	}
+
 }

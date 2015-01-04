@@ -31,7 +31,6 @@ public class SchuelerNachStadtteilFacade {
 
 	public static final String STADTTEIL_REST_SERVICE_URL = "http://localhost:8080/osm/dataservice/stadtteile/koeln";
 
-	private StringBuilder json = new StringBuilder();
 	private FeatureCollection featureCollection = new FeatureCollection();
 
 	private final static Logger logger = Logger
@@ -80,7 +79,7 @@ public class SchuelerNachStadtteilFacade {
 
 		// 2. Lies die Schueler im Stadtteil aus
 		List<SchuelerImStadtteil> schuelerList = new AskForSchuelerImStadtteil()
-				.getSchuelerImStadtteilList();
+				.getList();
 		Map<String, SchuelerImStadtteil> schuelerMap = new HashMap<String, SchuelerImStadtteil>();
 		// 3. Iteriere nur einmal
 		for (SchuelerImStadtteil schueler : schuelerList) {

@@ -34,8 +34,7 @@ public class SchuelerImStadtteilCsvParser implements
 			.addColumn("foerderschule") //
 			.build();
 
-	public SchuelerImStadtteilCsvParser() throws JsonProcessingException,
-			UnsupportedEncodingException, IOException {
+	public SchuelerImStadtteilCsvParser() {
 
 		ObjectMapper mapper = new CsvMapper();
 		objectReader = mapper.reader(SIMPLE_SCHEMA);

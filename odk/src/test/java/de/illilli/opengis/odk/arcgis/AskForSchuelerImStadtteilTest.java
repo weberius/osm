@@ -15,7 +15,7 @@ public class AskForSchuelerImStadtteilTest {
 	public void testForSize() throws URISyntaxException, IOException {
 		AskForSchuelerImStadtteil askForSchuelerImStadtteil = new AskForSchuelerImStadtteil();
 		List<SchuelerImStadtteil> schuelerImStadtTeilList = askForSchuelerImStadtteil
-				.getSchuelerImStadtteilList();
+				.getList();
 		Assert.assertTrue(schuelerImStadtTeilList.size() > 1);
 	}
 

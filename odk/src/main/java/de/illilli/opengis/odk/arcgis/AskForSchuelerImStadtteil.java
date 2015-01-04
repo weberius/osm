@@ -29,7 +29,7 @@ public class AskForSchuelerImStadtteil {
 		logger.debug("Data read from '" + SCHUELER_STADTTEIL_FILE + "'");
 	}
 
-	public List<SchuelerImStadtteil> getSchuelerImStadtteilList() {
+	public List<SchuelerImStadtteil> getList() {
 		return schuelerImStadtteilList;
 	}
 
