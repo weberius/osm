@@ -94,6 +94,9 @@ public class SchuelerNachStadtteilFacade {
 			if (schuelerImStadtteil != null) {
 				properties.put("allgemeinbildende_schulen",
 						schuelerImStadtteil.getAllgemeinbildende_schulen());
+				properties.put("allgemeinbildende_schulen",
+						schuelerImStadtteil.getAllgemeinbildende_schulen());
+
 			}
 		}
 		logger.debug("stop");
