@@ -18,6 +18,29 @@ package de.illilli.opengis.odk.bo.csv;
  */
 public class SchuelerImStadtteil {
 
+	public enum Head {
+
+		nr("Nr."), //
+		stadtteil("Stadtteil"), //
+		allgemeinbildende_schulen("Allgemeinbildende Schulen"), //
+		grundschule("Grundschule"), //
+		hauptschule("Hauptschule"), //
+		realschule("Realschule"), //
+		gymnasium("Gymnasium"), //
+		gesamtschule("Gesamtschule"), //
+		foerderschule("Förderschule");
+
+		private final String key;
+
+		Head(String key) {
+			this.key = key;
+		}
+
+		public String key() {
+			return key;
+		}
+	}
+
 	private int nr;
 	private String stadtteil;
 	private int allgemeinbildende_schulen;

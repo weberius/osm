@@ -14,7 +14,7 @@ public class SchuelerNachStadtteilFacadeSystemTest {
 	@Test
 	public void test() throws URISyntaxException, IOException {
 		String stadt = "köln";
-		SchuelerNachStadtteilFacade facade = new SchuelerNachStadtteilFacade(
+		SchuelerImStadtteilFacade facade = new SchuelerImStadtteilFacade(
 				stadt);
 		logger.debug(facade.getString());
 	}

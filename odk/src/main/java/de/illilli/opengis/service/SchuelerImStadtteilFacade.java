@@ -7,10 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.Context;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -27,22 +23,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.illilli.opengis.odk.arcgis.AskForSchuelerImStadtteil;
 import de.illilli.opengis.odk.bo.csv.SchuelerImStadtteil;
 
-public class SchuelerNachStadtteilFacade {
+public class SchuelerImStadtteilFacade {
 
 	public static final String STADTTEIL_REST_SERVICE_URL = "http://localhost:8080/osm/dataservice/stadtteile/koeln";
 
 	private FeatureCollection featureCollection = new FeatureCollection();
 
 	private final static Logger logger = Logger
-			.getLogger(SchuelerNachStadtteilFacade.class);
+			.getLogger(SchuelerImStadtteilFacade.class);
 
-	@Context
-	HttpServletRequest request;
-
-	@Context
-	HttpServletResponse response;
-
-	public SchuelerNachStadtteilFacade(String stadt) throws URISyntaxException,
+	public SchuelerImStadtteilFacade(String stadt) throws URISyntaxException,
 			IOException {
 		logger.debug("stadt: " + stadt);
 		// 1. hole alle stadtteile aus dem osm-service und verstaue sie in einer
@@ -94,12 +84,20 @@ public class SchuelerNachStadtteilFacade {
 			if (schuelerImStadtteil != null) {
 				properties.put("allgemeinbildende_schulen",
 						schuelerImStadtteil.getAllgemeinbildende_schulen());
-				properties.put("allgemeinbildende_schulen",
-						schuelerImStadtteil.getAllgemeinbildende_schulen());
+				properties.put("grundschule",
+						schuelerImStadtteil.getGrundschule());
+				properties.put("hauptschule",
+						schuelerImStadtteil.getHauptschule());
+				properties.put("realschule",
+						schuelerImStadtteil.getRealschule());
+				properties.put("gymnasium", schuelerImStadtteil.getGymnasium());
+				properties.put("gesamtschule",
+						schuelerImStadtteil.getGesamtschule());
+				properties.put("foerderschule",
+						schuelerImStadtteil.getFoerderschule());
 
 			}
 		}
-		logger.debug("stop");
 	}
 
 	/**
