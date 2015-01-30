@@ -21,7 +21,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.illilli.opengis.odk.arcgis.AskForSchuelerImStadtteil;
+import de.illilli.opengis.odk.arcgis.AskForSchulenInKoeln;
+import de.illilli.opengis.odk.bo.SchulenImStadtteil;
 import de.illilli.opengis.odk.bo.csv.SchuelerImStadtteil;
+import de.illilli.opengis.odk.bo.json.SchulenInKoeln;
 
 public class SchuelerImStadtteilFacade {
 
@@ -75,27 +78,53 @@ public class SchuelerImStadtteilFacade {
 		for (SchuelerImStadtteil schueler : schuelerList) {
 			schuelerMap.put(Integer.toString(schueler.getNr()), schueler);
 		}
+
 		// 3. reichere die notwendigen Informationen an
 		List<Feature> featureList = featureCollection.getFeatures();
+		SchulenInKoeln schulenInKoeln = new AskForSchulenInKoeln()
+				.getSchulenInKoeln();
 		for (Feature feature : featureList) {
 			Map<String, Object> properties = feature.getProperties();
-			String nr = (String) properties.get("ref");
-			SchuelerImStadtteil schuelerImStadtteil = schuelerMap.get(nr);
+			String ref = (String) properties.get("ref");
+			int nr = Integer.parseInt(ref);
+			SchuelerImStadtteil schuelerImStadtteil = schuelerMap.get(ref);
 			if (schuelerImStadtteil != null) {
-				properties.put("allgemeinbildende_schulen",
+				properties.put("schueler_allgemeinbildende_schulen",
 						schuelerImStadtteil.getAllgemeinbildende_schulen());
-				properties.put("grundschule",
+				properties.put("schueler_grundschule",
 						schuelerImStadtteil.getGrundschule());
-				properties.put("hauptschule",
+				properties.put("schueler_hauptschule",
 						schuelerImStadtteil.getHauptschule());
-				properties.put("realschule",
+				properties.put("schueler_realschule",
 						schuelerImStadtteil.getRealschule());
-				properties.put("gymnasium", schuelerImStadtteil.getGymnasium());
-				properties.put("gesamtschule",
+				properties.put("schueler_gymnasium",
+						schuelerImStadtteil.getGymnasium());
+				properties.put("schueler_gesamtschule",
 						schuelerImStadtteil.getGesamtschule());
-				properties.put("foerderschule",
+				properties.put("schueler_foerderschule",
 						schuelerImStadtteil.getFoerderschule());
 
+				properties.put("schulen_allgemeinbildende_schulen",
+						new SchulenImStadtteil(schulenInKoeln)
+								.getAnzahlSchulenJeStadtteil(nr));
+				properties.put("schulen_grundschule", new SchulenImStadtteil(
+						schulenInKoeln).getAnzahlSchulartJeStadtteil(nr,
+						SchulenImStadtteil.Head.grundschule.name()));
+				properties.put("schulen_realschule", new SchulenImStadtteil(
+						schulenInKoeln).getAnzahlSchulartJeStadtteil(nr,
+						SchulenImStadtteil.Head.realschule.name()));
+				properties.put("schulen_foerderschule", new SchulenImStadtteil(
+						schulenInKoeln).getAnzahlSchulartJeStadtteil(nr,
+						SchulenImStadtteil.Head.foerderschule.name()));
+				properties.put("schulen_gymnasium", new SchulenImStadtteil(
+						schulenInKoeln).getAnzahlSchulartJeStadtteil(nr,
+						SchulenImStadtteil.Head.gymnasium.name()));
+				properties.put("schulen_hauptschule", new SchulenImStadtteil(
+						schulenInKoeln).getAnzahlSchulartJeStadtteil(nr,
+						SchulenImStadtteil.Head.hauptschule.name()));
+				properties.put("schulen_gesamtschule", new SchulenImStadtteil(
+						schulenInKoeln).getAnzahlSchulartJeStadtteil(nr,
+						SchulenImStadtteil.Head.gesamtschule.name()));
 			}
 		}
 	}

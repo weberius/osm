@@ -21,7 +21,7 @@ public class SchulenInKoelnNachStadtteilIntegrationTest {
 			IOException, URISyntaxException {
 		AskForSchulenInKoeln askfor = new AskForSchulenInKoeln();
 
-		SchulenInKoelnNachStadtteil schule = new SchulenInKoelnNachStadtteil(
+		SchulenImStadtteil schule = new SchulenImStadtteil(
 				askfor.getSchulenInKoeln());
 	}
 
@@ -30,7 +30,7 @@ public class SchulenInKoelnNachStadtteilIntegrationTest {
 			JsonMappingException, IOException, URISyntaxException {
 		int nrStadtteil = 903;
 		AskForSchulenInKoeln askfor = new AskForSchulenInKoeln();
-		SchulenInKoelnNachStadtteil schule = new SchulenInKoelnNachStadtteil(
+		SchulenImStadtteil schule = new SchulenImStadtteil(
 				askfor.getSchulenInKoeln());
 		int anzahlSchulen = schule.getAnzahlSchulenJeStadtteil(nrStadtteil);
 		logger.debug(anzahlSchulen);
@@ -43,7 +43,7 @@ public class SchulenInKoelnNachStadtteilIntegrationTest {
 		int nrStadtteil = 805;// 903;
 		String schulart = "Grundschule";
 		AskForSchulenInKoeln askfor = new AskForSchulenInKoeln();
-		SchulenInKoelnNachStadtteil schule = new SchulenInKoelnNachStadtteil(
+		SchulenImStadtteil schule = new SchulenImStadtteil(
 				askfor.getSchulenInKoeln());
 		double anteilSchulen = schule.getAnteilSchulartJeStadtteil(nrStadtteil,
 				schulart);

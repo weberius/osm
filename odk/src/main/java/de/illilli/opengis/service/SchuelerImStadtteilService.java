@@ -17,6 +17,15 @@ public class SchuelerImStadtteilService {
 	private static final Logger logger = Logger
 			.getLogger(SchuelerImStadtteilService.class);
 
+	/**
+	 * <a
+	 * href="http://localhost:8080/odk/dataservice/stadtteil/schueler/koeln">/
+	 * odk/dataservice/stadtteil/schueler/koeln</a>
+	 * 
+	 * @return
+	 * @throws URISyntaxException
+	 * @throws IOException
+	 */
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
 	@Path("schueler/koeln")

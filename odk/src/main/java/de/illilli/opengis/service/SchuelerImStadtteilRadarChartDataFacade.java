@@ -19,7 +19,7 @@ import com.google.gson.Gson;
 import de.illilli.opengis.odk.arcgis.AskForSchulenInKoeln;
 import de.illilli.opengis.odk.bo.RadarChartBo;
 import de.illilli.opengis.odk.bo.RadarChartDatasets;
-import de.illilli.opengis.odk.bo.SchulenInKoelnNachStadtteil;
+import de.illilli.opengis.odk.bo.SchulenImStadtteil;
 
 public class SchuelerImStadtteilRadarChartDataFacade {
 
@@ -52,7 +52,7 @@ public class SchuelerImStadtteilRadarChartDataFacade {
 		datasets = new RadarChartDatasets[1];
 		try {
 			AskForSchulenInKoeln askFor = new AskForSchulenInKoeln();
-			SchulenInKoelnNachStadtteil schulen = new SchulenInKoelnNachStadtteil(
+			SchulenImStadtteil schulen = new SchulenImStadtteil(
 					askFor.getSchulenInKoeln());
 			List<String> schulartList = schulen.getSchulartList();
 			String[] schulartArray = new String[schulartList.size()];
@@ -74,6 +74,17 @@ public class SchuelerImStadtteilRadarChartDataFacade {
 			datasets[0].setPointStrokeColor("#fff");
 			datasets[0].setStrokeColor("rgba(220,220,220,1)");
 			datasets[0].setData(anteilSchulartJeStadtteilArray);
+
+			datasets[1] = new RadarChartDatasets();
+			datasets[1].setLabel("Schüler");
+			datasets[1].setFillColor("rgba(220,220,220,0.2)");
+			datasets[1].setPointColor("rgba(220,220,220,1)");
+			datasets[1].setPointHighlightFill("#fff");
+			datasets[1].setPointHighlightStroke("rgba(220,220,220,1)");
+			datasets[1].setPointStrokeColor("#fff");
+			datasets[1].setStrokeColor("rgba(220,220,220,1)");
+			datasets[1].setData(anteilSchulartJeStadtteilArray);
+
 			radarChartBo.setDatasets(datasets);
 			radarChartBo.setLabels(schulartArray);
 			jsonString = new Gson().toJson(radarChartBo);
