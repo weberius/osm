@@ -6,10 +6,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link rel="stylesheet" href="leaflet-0.7.3/leaflet.css" />
-<link rel="stylesheet" href="leaflet-0.7.3/Control.Loading.css" />
 <link rel="stylesheet" href="leaflet-0.7.3/leaflet.viewcenter.css" />
+<link rel="stylesheet" href="leaflet-0.7.3/MarkerCluster.css" />
+<link rel="stylesheet" href="leaflet-0.7.3/MarkerCluster.Default.css" />
 <link rel="stylesheet" href="bootstrap-3.2.0-dist/css/bootstrap.min.css">
-
 <style type="text/css">
 body {
 	padding-top: 50px;
@@ -135,20 +135,20 @@ div#pieLegend {
   text-shadow: 1em 1em 1em #FFF;
   opacity: 1;
   }
-/*
-.leaflet-popup-content {
-  background-color:#fff;
-  opacity: 1;
+
+.leaflet-popup-content table {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 5px;
 }
-*/
+
 .leaflet-popup-content-wrapper a {
   color:rgba(255,255,255,0.5);
   }
 .leaflet-popup-tip-container {
-  background:rgba(256,256,256,1);
+  background:rgba(256,256,256,1.0);
   width:30px;
   height:15px;
-  opacity: 0.5;
+  opacity: 0.0;
   }
 .leaflet-popup-tip {
   border-left:15px solid transparent;
@@ -160,12 +160,12 @@ div#pieLegend {
 <script src="jquery/jquery-2.1.1.min.js"></script>
 <script src="bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
 <script src="leaflet-0.7.3/leaflet.js" type="text/javascript"></script>
-<script src="leaflet-0.7.3/Control.Loading.js" type="text/javascript"></script>
+<script src="leaflet-0.7.3/leaflet.markercluster.js" type="text/javascript"></script>
 <script src="leaflet-0.7.3/leaflet.viewcenter.js" type="text/javascript"></script>
 <script src="leaflet-0.7.3/leaflet.ajax.js" type="text/javascript"></script>
-<script src="leaflet-0.7.3/leaflet.spin.js"></script>
 <script src="leaflet-0.7.3/spin.js"></script>
 <script src="chart.js.1.0.1-beta.4/Chart.min.js"></script>
+<script src="koeln-schulen.js"></script>
 <script type="text/javascript">
 
 </script>
@@ -187,12 +187,6 @@ div#pieLegend {
 		// add view Center
 		var viewCenter = new L.Control.ViewCenter();
 		map.addControl(viewCenter);
-
-		// add loading control
-		var loadingControl = L.Control.loading({
-			separate : true
-		});
-		map.addControl(loadingControl);
 
 		// infobox rechts oben	
 		var info = L.control();
@@ -293,6 +287,7 @@ div#pieLegend {
 			};
 		}
 
+		
 		function highlightFeature(e) {
 			var layer = e.target;
 
@@ -345,9 +340,27 @@ div#pieLegend {
 			style : style,
 			onEachFeature : onEachFeature
 		});
-
+		
 		map.addLayer(stadtteileKoelnLayer);
 
+		var schulenLayer = new L.GeoJSON(schulen, {
+			onEachFeature : function (feature, layer) {
+				var popupContent = 
+					"<h1>Schule</h1>"
+				+ "<table>"
+				+ "<tr><th colspan='2'>" + feature.properties.Schulname + "</th></tr>"
+				+ "<tr><td colspan='2'>" + feature.properties.Adresse + "</td></tr>"
+				+ "<tr><td colspan='2'>" + feature.properties.Postzustellbezirk + " K&ouml;ln</td></tr>"
+				+ "<tr><th colspan='2'>&nbsp;</th></tr>"
+				+ "<tr><td>Typ:&nbsp;</td><td>" + feature.properties.Schultyp + "</td></tr>"
+				+ "<tr><td>Art:&nbsp;</td><td>" + feature.properties.Schulart + "</td></tr>"
+				+ "</table>";
+				layer.bindPopup(popupContent);
+			}
+		});
+		
+		map.addLayer(schulenLayer);
+		
 		var legend = L.control({
 			position : 'bottomright'
 		});
