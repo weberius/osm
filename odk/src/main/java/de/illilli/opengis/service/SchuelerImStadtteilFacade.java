@@ -3,6 +3,7 @@ package de.illilli.opengis.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,9 +21,11 @@ import org.geojson.GeometryCollection;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import de.illilli.opengis.odk.arcgis.AskForEinwohnerAltersgruppenStadtteile;
 import de.illilli.opengis.odk.arcgis.AskForSchuelerImStadtteil;
 import de.illilli.opengis.odk.arcgis.AskForSchulenInKoeln;
 import de.illilli.opengis.odk.bo.SchulenImStadtteil;
+import de.illilli.opengis.odk.bo.csv.EinwohnerNachAltersgruppen;
 import de.illilli.opengis.odk.bo.csv.SchuelerImStadtteil;
 import de.illilli.opengis.odk.bo.json.SchulenInKoeln;
 
@@ -34,6 +37,8 @@ public class SchuelerImStadtteilFacade {
 
 	private final static Logger logger = Logger
 			.getLogger(SchuelerImStadtteilFacade.class);
+
+	private DecimalFormat df = new DecimalFormat("0.00");
 
 	public SchuelerImStadtteilFacade(String stadt) throws URISyntaxException,
 			IOException {
@@ -78,6 +83,14 @@ public class SchuelerImStadtteilFacade {
 		for (SchuelerImStadtteil schueler : schuelerList) {
 			schuelerMap.put(Integer.toString(schueler.getNr()), schueler);
 		}
+		// 4. Lies die Bevoelkerungsstrukur ein
+		List<EinwohnerNachAltersgruppen> einwohnerList = new AskForEinwohnerAltersgruppenStadtteile()
+				.getList();
+		Map<String, EinwohnerNachAltersgruppen> einwohnerMap = new HashMap<String, EinwohnerNachAltersgruppen>();
+		// 5. Iteriere nur einmal
+		for (EinwohnerNachAltersgruppen einwohner : einwohnerList) {
+			einwohnerMap.put(Integer.toString(einwohner.getNr()), einwohner);
+		}
 
 		// 3. reichere die notwendigen Informationen an
 		List<Feature> featureList = featureCollection.getFeatures();
@@ -88,6 +101,7 @@ public class SchuelerImStadtteilFacade {
 			String ref = (String) properties.get("ref");
 			int nr = Integer.parseInt(ref);
 			SchuelerImStadtteil schuelerImStadtteil = schuelerMap.get(ref);
+			EinwohnerNachAltersgruppen einwohner = einwohnerMap.get(ref);
 			if (schuelerImStadtteil != null) {
 				properties.put("schueler_allgemeinbildende_schulen",
 						schuelerImStadtteil.getAllgemeinbildende_schulen());
@@ -103,6 +117,42 @@ public class SchuelerImStadtteilFacade {
 						schuelerImStadtteil.getGesamtschule());
 				properties.put("schueler_foerderschule",
 						schuelerImStadtteil.getFoerderschule());
+
+				double schuelerProEinwohner = (double) schuelerImStadtteil
+						.getAllgemeinbildende_schulen()
+						/ (double) einwohner.getEinwohnerInsgesamt() * 100;
+				properties.put("schueler_allgemeinbildende_schulen_proz",
+						df.format(schuelerProEinwohner));
+				schuelerProEinwohner = (double) schuelerImStadtteil
+						.getGrundschule()
+						/ (double) einwohner.getEinwohnerInsgesamt() * 100;
+				properties.put("schueler_grundschule_proz",
+						df.format(schuelerProEinwohner));
+				schuelerProEinwohner = (double) schuelerImStadtteil
+						.getHauptschule()
+						/ (double) einwohner.getEinwohnerInsgesamt() * 100;
+				properties.put("schueler_hauptschule_proz",
+						df.format(schuelerProEinwohner));
+				schuelerProEinwohner = (double) schuelerImStadtteil
+						.getRealschule()
+						/ (double) einwohner.getEinwohnerInsgesamt() * 100;
+				properties.put("schueler_realschule_proz",
+						df.format(schuelerProEinwohner));
+				schuelerProEinwohner = (double) schuelerImStadtteil
+						.getGymnasium()
+						/ (double) einwohner.getEinwohnerInsgesamt() * 100;
+				properties.put("schueler_gymnasium_proz",
+						df.format(schuelerProEinwohner));
+				schuelerProEinwohner = (double) schuelerImStadtteil
+						.getGesamtschule()
+						/ (double) einwohner.getEinwohnerInsgesamt() * 100;
+				properties.put("schueler_gesamtschule_proz",
+						df.format(schuelerProEinwohner));
+				schuelerProEinwohner = (double) schuelerImStadtteil
+						.getFoerderschule()
+						/ (double) einwohner.getEinwohnerInsgesamt() * 100;
+				properties.put("schueler_foerderschule_proz",
+						df.format(schuelerProEinwohner));
 
 				properties.put("schulen_allgemeinbildende_schulen",
 						new SchulenImStadtteil(schulenInKoeln)
@@ -125,6 +175,10 @@ public class SchuelerImStadtteilFacade {
 				properties.put("schulen_gesamtschule", new SchulenImStadtteil(
 						schulenInKoeln).getAnzahlSchulartJeStadtteil(nr,
 						SchulenImStadtteil.Head.gesamtschule.name()));
+				properties.put("schulen_berufskolleg", new SchulenImStadtteil(
+						schulenInKoeln).getAnzahlSchulartJeStadtteil(nr,
+						SchulenImStadtteil.Head.berufskolleg.name()));
+
 			}
 		}
 	}
