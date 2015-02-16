@@ -39,8 +39,8 @@ public class SchulenInKoelnService {
 	HttpServletResponse response;
 
 	/**
-	 * <a href="http://localhost:8090/odk/dataservice/school/koeln">http://
-	 * localhost:8090/odkdataservice/school/koeln</a>
+	 * <a href="http://localhost:8080/odk/dataservice/school/koeln">/odk/
+	 * dataservice/school/koeln</a>
 	 * 
 	 * @return
 	 * @throws JsonParseException
@@ -79,6 +79,52 @@ public class SchulenInKoelnService {
 
 	}
 
+	/**
+	 * Beispiele:
+	 * <ul>
+	 * <li>
+	 * <a href=
+	 * "http://localhost:8080/odk/dataservice/school/koeln/2.%20bildungsweg">/
+	 * odk/dataservice/school/koeln/2.%20bildungsweg</a></li>
+	 * <li>
+	 * <a
+	 * href="http://localhost:8080/odk/dataservice/school/koeln/berufskolleg">/
+	 * odk/dataservice/school/koeln/berufskolleg</a></li>
+	 * <li>
+	 * <a href=
+	 * "http://localhost:8080/odk/dataservice/school/koeln/f%C3%B6rderschule">/
+	 * odk/dataservice/school/koeln/f%C3%B6rderschule</a></li>
+	 * <li>
+	 * <a href=
+	 * "http://localhost:8080/odk/dataservice/school/koeln/freie%20waldorfschule"
+	 * >/ odk/dataservice/school/koeln/freie%20waldorfschule</a></li>
+	 * <li>
+	 * <a
+	 * href="http://localhost:8080/odk/dataservice/school/koeln/gesamtschule">/
+	 * odk/dataservice/school/koeln/gesamtschule</a></li>
+	 * <li>
+	 * <a
+	 * href="http://localhost:8080/odk/dataservice/school/koeln/grundschule">/
+	 * odk/dataservice/school/koeln/grundschule</a></li>
+	 * <li>
+	 * <a href="http://localhost:8080/odk/dataservice/school/koeln/gymnasium">/
+	 * odk/dataservice/school/koeln/gymnasium</a></li>
+	 * <li>
+	 * <a
+	 * href="http://localhost:8080/odk/dataservice/school/koeln/hauptschule">/
+	 * odk/dataservice/school/koeln/hauptschule</a></li>
+	 * <li>
+	 * <a href="http://localhost:8080/odk/dataservice/school/koeln/realschule">/
+	 * odk/dataservice/school/koeln/realschule</a></li>
+	 * </ul>
+	 * 
+	 * @param schulart
+	 * @return
+	 * @throws JsonParseException
+	 * @throws JsonMappingException
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 */
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
 	@Path("koeln/{schulart}")
