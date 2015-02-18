@@ -91,11 +91,11 @@ public class SchuelerImStadtteilFacade {
 		for (EinwohnerNachAltersgruppen einwohner : einwohnerList) {
 			einwohnerMap.put(Integer.toString(einwohner.getNr()), einwohner);
 		}
-
-		// 3. reichere die notwendigen Informationen an
-		List<Feature> featureList = featureCollection.getFeatures();
+		// 6. reichere die notwendigen Informationen um Schulen an
 		SchulenInKoeln schulenInKoeln = new AskForSchulenInKoeln()
 				.getSchulenInKoeln();
+		// 7. nun alles in den properties unterbringen
+		List<Feature> featureList = featureCollection.getFeatures();
 		for (Feature feature : featureList) {
 			Map<String, Object> properties = feature.getProperties();
 			String ref = (String) properties.get("ref");
@@ -159,25 +159,39 @@ public class SchuelerImStadtteilFacade {
 								.getAnzahlSchulenJeStadtteil(nr));
 				properties.put("schulen_grundschule", new SchulenImStadtteil(
 						schulenInKoeln).getAnzahlSchulartJeStadtteil(nr,
-						SchulenImStadtteil.Head.grundschule.name()));
+						SchulenImStadtteil.Head.grundschule.key()));
 				properties.put("schulen_realschule", new SchulenImStadtteil(
 						schulenInKoeln).getAnzahlSchulartJeStadtteil(nr,
-						SchulenImStadtteil.Head.realschule.name()));
+						SchulenImStadtteil.Head.realschule.key()));
 				properties.put("schulen_foerderschule", new SchulenImStadtteil(
 						schulenInKoeln).getAnzahlSchulartJeStadtteil(nr,
-						SchulenImStadtteil.Head.foerderschule.name()));
+						SchulenImStadtteil.Head.foerderschule.key()));
 				properties.put("schulen_gymnasium", new SchulenImStadtteil(
 						schulenInKoeln).getAnzahlSchulartJeStadtteil(nr,
-						SchulenImStadtteil.Head.gymnasium.name()));
+						SchulenImStadtteil.Head.gymnasium.key()));
 				properties.put("schulen_hauptschule", new SchulenImStadtteil(
 						schulenInKoeln).getAnzahlSchulartJeStadtteil(nr,
-						SchulenImStadtteil.Head.hauptschule.name()));
+						SchulenImStadtteil.Head.hauptschule.key()));
 				properties.put("schulen_gesamtschule", new SchulenImStadtteil(
 						schulenInKoeln).getAnzahlSchulartJeStadtteil(nr,
-						SchulenImStadtteil.Head.gesamtschule.name()));
+						SchulenImStadtteil.Head.gesamtschule.key()));
 				properties.put("schulen_berufskolleg", new SchulenImStadtteil(
 						schulenInKoeln).getAnzahlSchulartJeStadtteil(nr,
-						SchulenImStadtteil.Head.berufskolleg.name()));
+						SchulenImStadtteil.Head.berufskolleg.key()));
+				properties
+						.put("schulen_zweiterBildungsweg",
+								new SchulenImStadtteil(schulenInKoeln)
+										.getAnzahlSchulartJeStadtteil(
+												nr,
+												SchulenImStadtteil.Head.zweiterBildungsweg
+														.key()));
+				properties
+						.put("schulen_freieWaldorfschule",
+								new SchulenImStadtteil(schulenInKoeln)
+										.getAnzahlSchulartJeStadtteil(
+												nr,
+												SchulenImStadtteil.Head.freieWaldorfschule
+														.key()));
 
 			}
 		}
