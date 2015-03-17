@@ -373,7 +373,21 @@ div#pieLegend {
 			}
 		});
 		
-		map.addLayer(schulenLayer);
+		function onEachSchulenFeature(feature, layer) {
+			var popupContent = 
+				"<h1>Schule</h1>"
+			+ "<table>"
+			+ "<tr><th colspan='2'>" + feature.properties.Schulname + "</th></tr>"
+			+ "<tr><td colspan='2'>" + feature.properties.Adresse + "</td></tr>"
+			+ "<tr><td colspan='2'>" + feature.properties.Postzustellbezirk + " K&ouml;ln</td></tr>"
+			+ "<tr><th colspan='2'>&nbsp;</th></tr>"
+			+ "<tr><td>Typ:&nbsp;</td><td>" + feature.properties.Schultyp + "</td></tr>"
+			+ "<tr><td>Art:&nbsp;</td><td>" + feature.properties.Schulart + "</td></tr>"
+			+ "</table>";
+			layer.bindPopup(popupContent);
+		}
+		
+//		map.addLayer(schulenLayer);
 		
 		var legend = L.control({
 			position : 'bottomright'
@@ -405,6 +419,102 @@ div#pieLegend {
 
 		var scale = L.control.scale();
 		map.addControl(scale);
+		
+		// define
+		function getSchulenLayer(schulart) {
+			return "/odk/dataservice/school/koeln/" + schulart
+		};
+
+		// Gymnasien
+		var gymnasiumLayer = new L.geoJson(null, {onEachFeature : onEachSchulenFeature});
+		map.on('overlayadd', function(e) {
+			if (e.name == 'Gymnasium') {
+				gymnasiumLayer.fire('data:loading');
+				$.getJSON(getSchulenLayer('Gymnasium'), function(data) {
+					gymnasiumLayer.fire('data:loaded');
+					gymnasiumLayer.addData(data);
+				});
+			}
+		});
+
+		// Grundschule
+		var grundschuleLayer = new L.geoJson(null, {onEachFeature : onEachFeature});
+		map.on('overlayadd', function(e) {
+			if (e.name == 'Grundschule') {
+				grundschuleLayer.fire('data:loading');
+				$.getJSON(getSchulenLayer('Grundschule'), function(data) {
+					grundschuleLayer.fire('data:loaded');
+					grundschuleLayer.addData(data);
+				});
+			}
+		});
+
+		// Hauptschule
+		var hauptschuleLayer = new L.geoJson(null, {onEachFeature : onEachFeature});
+		map.on('overlayadd', function(e) {
+			if (e.name == 'Hauptschule') {
+				hauptschuleLayer.fire('data:loading');
+				$.getJSON(getSchulenLayer('Hauptschule'), function(data) {
+					hauptschuleLayer.fire('data:loaded');
+					hauptschuleLayer.addData(data);
+				});
+			}
+		});
+
+		// Realschule
+		var realschuleLayer = new L.geoJson(null, {onEachFeature : onEachFeature});
+		map.on('overlayadd', function(e) {
+			if (e.name == 'Realschule') {
+				realschuleLayer.fire('data:loading');
+				$.getJSON(getSchulenLayer('Realschule'), function(data) {
+					realschuleLayer.fire('data:loaded');
+					realschuleLayer.addData(data);
+				});
+			}
+		});
+
+		// Gesamtschule
+		var gesamtschuleLayer = new L.geoJson(null, {onEachFeature : onEachFeature});
+		map.on('overlayadd', function(e) {
+			if (e.name == 'Gesamtschule') {
+				gesamtschuleLayer.fire('data:loading');
+				$.getJSON(getSchulenLayer('Gesamtschule'), function(data) {
+					gesamtschuleLayer.fire('data:loaded');
+					gesamtschuleLayer.addData(data);
+				});
+			}
+		});
+
+		// Förderschule
+		var foerderschuleLayer = new L.geoJson(null, {onEachFeature : onEachFeature});
+		map.on('overlayadd', function(e) {
+			if (e.name == 'Förderschule') {
+				foerderschuleLayer.fire('data:loading');
+				$.getJSON(getSchulenLayer('Förderschule'), function(data) {
+					foerderschuleLayer.fire('data:loaded');
+					foerderschuleLayer.addData(data);
+				});
+			}
+		});
+		var baseLayers = {
+				"MapBox" : mapBox
+			};
+
+		// Array der verwendeten overLays (should be read from server by ajax)
+		var overlays = {
+			"Grundschule" : grundschuleLayer,
+			"Hauptschule" : hauptschuleLayer,
+			"Realschule" : realschuleLayer,
+			"Gesamtschule" : gesamtschuleLayer,
+			"Förderschule" : foerderschuleLayer,
+			"Gymnasium" : gymnasiumLayer
+		};
+		// Layers dem Control-Layer uebergeben.
+		var layers = new L.Control.Layers(baseLayers, overlays, {
+			collapsed : false,
+			position : 'topright'
+		});
+		map.addControl(layers);
 	</script>
 </body>
 </html>

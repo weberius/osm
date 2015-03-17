@@ -3,10 +3,13 @@ package de.illilli.opengis.service;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
@@ -16,6 +19,12 @@ public class SchuelerImStadtteilService {
 
 	private static final Logger logger = Logger
 			.getLogger(SchuelerImStadtteilService.class);
+
+	@Context
+	HttpServletRequest request;
+
+	@Context
+	HttpServletResponse response;
 
 	/**
 	 * <a
@@ -30,6 +39,8 @@ public class SchuelerImStadtteilService {
 	@Produces({ MediaType.APPLICATION_JSON })
 	@Path("schueler/koeln")
 	public String getSchueler() throws URISyntaxException, IOException {
+		// setze das Character-Encoding fuer die Antwort auf UTF-8
+		response.setCharacterEncoding("UTF-8");
 		String stadt = "köln";
 		SchuelerImStadtteilFacade facade = new SchuelerImStadtteilFacade(stadt);
 		logger.debug(facade.getString());
