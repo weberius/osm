@@ -15,7 +15,7 @@ public class AskForAdministrativeLines {
 	private String sql = "select osm_id, admin_level, bicycle, bridge, boundary, foot, highway, motorcar, name, population, ref, surface, tracktype, waterway, width, "
 			// + "ST_AsText(ST_Transform(way,4326)) as way "
 			+ "ST_ASGEOJSON(ST_Transform(way,4326)) as way " //
-			+ "from planet_osm_roads where boundary = 'administrative' and name = 'Köln'";
+			+ "from planet_osm_roads where boundary = 'administrative' and name = 'KÃ¶ln'";
 
 	private DbUtilsBeanListHandler<PlanetOsmLine> handler;
 	private List<PlanetOsmLine> pois;
@@ -23,9 +23,11 @@ public class AskForAdministrativeLines {
 	public List<PlanetOsmLine> getPois(int adminLevel) throws SQLException {
 
 		Connection connection = ConnectionFactory.getConnection();
-		BeanListHandler<PlanetOsmLine> beanListHandler = new BeanListHandler<PlanetOsmLine>(PlanetOsmLine.class);
+		BeanListHandler<PlanetOsmLine> beanListHandler = new BeanListHandler<PlanetOsmLine>(
+				PlanetOsmLine.class);
 		sql = sql + " and admin_level = '" + adminLevel + "'";
-		handler = new DbUtilsBeanListHandler<PlanetOsmLine>(connection, beanListHandler, sql);
+		handler = new DbUtilsBeanListHandler<PlanetOsmLine>(connection,
+				beanListHandler, sql);
 		pois = handler.getList();
 
 		return pois;
